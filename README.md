@@ -1,7 +1,24 @@
 # RecyclerTabLayout
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RecyclerTabLayout-green.svg?style=flat)](https://android-arsenal.com/details/1/2220)
+Migrating to AndroidX. An efficient TabLayout library implemented with RecyclerView.
 
-An efficient TabLayout library implemented with RecyclerView.
+## License
+```
+Copyright (C) 2019 ochim
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
+
+### Please refer to [RecyclerTabLayout](https://github.com/nshmura/RecyclerTabLayout)
 
 ## Features
 - Efficient when having many tabs
@@ -21,10 +38,6 @@ An efficient TabLayout library implemented with RecyclerView.
 ![Basic](art/basic.gif)
 
 ![Icon](art/icon.gif)
-
-
-## Samples
-<a href="https://play.google.com/store/apps/details?id=com.nshmura.recyclertablayout.demo"><img src="art/googleplay.png"/></a>
 
 ## Getting started
 In your build.gradle:
@@ -135,7 +148,6 @@ public class CustomRecyclerViewAdapter extends RecyclerTabLayout.Adapter<CustomR
 
 [default attribute](library/src/main/res/values/styles.xml)
 
-
 ## Thanks
 The demo app uses the following resources.
 
@@ -145,19 +157,3 @@ https://github.com/codebrainz/color-names
 Material Design icons by Google<br/>
 https://github.com/google/material-design-icons
 
-## License
-```
-Copyright (C) 2017 nshmura
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
