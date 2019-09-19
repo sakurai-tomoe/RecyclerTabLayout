@@ -2,6 +2,19 @@
 Migrated to AndroidX.
 An efficient TabLayout library implemented with RecyclerView.
 
+## Getting started
+In your build.gradle:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation "com.ochim:recyclertablayout-androidx:2.0.0"
+}
+```
+
 ## License
 ```
 Copyright (C) 2019 ochim
@@ -56,17 +69,6 @@ limitations under the License.
 ![Icon](art/icon.gif)
 
 ## Getting started
-In your build.gradle:
-
-```
-repositories {
-    jcenter()
-}
-
-dependencies {
-   compile 'com.nshmura:recyclertablayout:1.5.0'
-}
-```
 
 Define `RecyclerTabLayout` in xml layout with custom attributes.
 ```xml
