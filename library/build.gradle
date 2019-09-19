@@ -28,7 +28,6 @@ publish {
     userOrg = POM_DEVELOPER_ID
     groupId = GROUP
     artifactId = ARTIFACT_ID
-    uploadName = ARTIFACT_NAME
     publishVersion = VERSION_NAME
     desc = POM_DESCRIPTION
     website = POM_URL
