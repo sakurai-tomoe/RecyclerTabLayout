@@ -22,18 +22,22 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import androidx.core.view.ViewCompat;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
+
+import java.util.List;
 
 public class RecyclerTabLayout extends RecyclerView {
 
@@ -57,7 +61,7 @@ public class RecyclerTabLayout extends RecyclerView {
 
     protected LinearLayoutManager mLinearLayoutManager;
     protected RecyclerOnScrollListener mRecyclerOnScrollListener;
-    protected ViewPager mViewPager;
+    protected ViewPager2 mViewPager;
     protected Adapter<?> mAdapter;
 
     protected int mIndicatorPosition;
@@ -169,8 +173,8 @@ public class RecyclerTabLayout extends RecyclerView {
         mPositionThreshold = positionThreshold;
     }
 
-    public void setUpWithViewPager(ViewPager viewPager) {
-        DefaultAdapter adapter = new DefaultAdapter(viewPager);
+    public void setUpWithViewPager(ViewPager2 viewPager, List<CharSequence> titleList) {
+        DefaultAdapter adapter = new DefaultAdapter(viewPager, titleList);
         adapter.setTabPadding(mTabPaddingStart, mTabPaddingTop, mTabPaddingEnd, mTabPaddingBottom);
         adapter.setTabTextAppearance(mTabTextAppearance);
         adapter.setTabSelectedTextColor(mTabSelectedTextColorSet, mTabSelectedTextColor);
@@ -187,7 +191,30 @@ public class RecyclerTabLayout extends RecyclerView {
         if (mViewPager.getAdapter() == null) {
             throw new IllegalArgumentException("ViewPager does not have a PagerAdapter set");
         }
-        mViewPager.addOnPageChangeListener(new ViewPagerOnPageChangeListener(this));
+        mViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+
+            private int mScrollState;
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                RecyclerTabLayout.this.scrollToTab(position, positionOffset, false);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (mScrollState == ViewPager2.SCROLL_STATE_IDLE) {
+                    if (RecyclerTabLayout.this.mIndicatorPosition != position) {
+                        RecyclerTabLayout.this.scrollToTab(position);
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                mScrollState = state;
+            }
+
+        });
         setAdapter(adapter);
         scrollToTab(mViewPager.getCurrentItem());
     }
@@ -260,7 +287,7 @@ public class RecyclerTabLayout extends RecyclerView {
                 if (position == 0) {
                     float indicatorGap = (nextView.getMeasuredWidth() - selectedView.getMeasuredWidth()) / 2;
                     mIndicatorGap = (int) (indicatorGap * positionOffset);
-                    mIndicatorScroll = (int)((selectedView.getMeasuredWidth() + indicatorGap)  * positionOffset);
+                    mIndicatorScroll = (int) ((selectedView.getMeasuredWidth() + indicatorGap) * positionOffset);
 
                 } else {
                     float indicatorGap = (nextView.getMeasuredWidth() - selectedView.getMeasuredWidth()) / 2;
@@ -410,48 +437,21 @@ public class RecyclerTabLayout extends RecyclerView {
                 }
             }
         }
+
     }
 
-    protected static class ViewPagerOnPageChangeListener implements ViewPager.OnPageChangeListener {
-
-        private final RecyclerTabLayout mRecyclerTabLayout;
-        private int mScrollState;
-
-        public ViewPagerOnPageChangeListener(RecyclerTabLayout recyclerTabLayout) {
-            mRecyclerTabLayout = recyclerTabLayout;
-        }
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            mRecyclerTabLayout.scrollToTab(position, positionOffset, false);
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-            mScrollState = state;
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            if (mScrollState == ViewPager.SCROLL_STATE_IDLE) {
-                if (mRecyclerTabLayout.mIndicatorPosition != position) {
-                    mRecyclerTabLayout.scrollToTab(position);
-                }
-            }
-        }
-    }
 
     public static abstract class Adapter<T extends RecyclerView.ViewHolder>
             extends RecyclerView.Adapter<T> {
 
-        protected ViewPager mViewPager;
+        protected ViewPager2 mViewPager;
         protected int mIndicatorPosition;
 
-        public Adapter(ViewPager viewPager) {
+        public Adapter(ViewPager2 viewPager) {
             mViewPager = viewPager;
         }
 
-        public ViewPager getViewPager() {
+        public ViewPager2 getViewPager() {
             return mViewPager;
         }
 
@@ -481,8 +481,11 @@ public class RecyclerTabLayout extends RecyclerView {
         private int mTabBackgroundResId;
         private int mTabOnScreenLimit;
 
-        public DefaultAdapter(ViewPager viewPager) {
+        private List<CharSequence> mTitleList = null;
+
+        public DefaultAdapter(ViewPager2 viewPager, @NonNull List<CharSequence> titleList) {
             super(viewPager);
+            mTitleList = titleList;
         }
 
         @SuppressWarnings("deprecation")
@@ -529,14 +532,14 @@ public class RecyclerTabLayout extends RecyclerView {
 
         @Override
         public void onBindViewHolder(DefaultAdapter.ViewHolder holder, int position) {
-            CharSequence title = getViewPager().getAdapter().getPageTitle(position);
+            CharSequence title = mTitleList.get(position);
             holder.title.setText(title);
             holder.title.setSelected(getCurrentIndicatorPosition() == position);
         }
 
         @Override
         public int getItemCount() {
-            return getViewPager().getAdapter().getCount();
+            return getViewPager().getAdapter().getItemCount();
         }
 
         public void setTabPadding(int tabPaddingStart, int tabPaddingTop, int tabPaddingEnd,
