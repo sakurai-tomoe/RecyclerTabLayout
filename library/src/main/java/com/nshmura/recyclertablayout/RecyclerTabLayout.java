@@ -173,7 +173,7 @@ public class RecyclerTabLayout extends RecyclerView {
         mPositionThreshold = positionThreshold;
     }
 
-    public void setUpWithViewPager(ViewPager2 viewPager, List<CharSequence> titleList) {
+    public void setUpWithViewPager(ViewPager2 viewPager, List<? extends CharSequence> titleList) {
         DefaultAdapter adapter = new DefaultAdapter(viewPager, titleList);
         adapter.setTabPadding(mTabPaddingStart, mTabPaddingTop, mTabPaddingEnd, mTabPaddingBottom);
         adapter.setTabTextAppearance(mTabTextAppearance);
@@ -481,9 +481,9 @@ public class RecyclerTabLayout extends RecyclerView {
         private int mTabBackgroundResId;
         private int mTabOnScreenLimit;
 
-        private List<CharSequence> mTitleList = null;
+        private List<? extends CharSequence> mTitleList = null;
 
-        public DefaultAdapter(ViewPager2 viewPager, @NonNull List<CharSequence> titleList) {
+        public DefaultAdapter(ViewPager2 viewPager, @NonNull List<? extends CharSequence> titleList) {
             super(viewPager);
             mTitleList = titleList;
         }
