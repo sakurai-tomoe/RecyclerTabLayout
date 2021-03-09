@@ -532,7 +532,7 @@ public class RecyclerTabLayout extends RecyclerView {
 
         @Override
         public void onBindViewHolder(DefaultAdapter.ViewHolder holder, int position) {
-            CharSequence title = mTitleList.get(position % getItemCount());
+            CharSequence title = mTitleList.get(position % mTitleList.size());
             holder.title.setText(title);
             holder.title.setSelected(getCurrentIndicatorPosition() == position);
         }
